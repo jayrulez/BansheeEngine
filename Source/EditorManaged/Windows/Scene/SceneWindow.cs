@@ -103,7 +103,7 @@ namespace bs.Editor
         private GUIPanel selectionPanel;
 
         // Camera previews
-        private const int MaxCameraPreviews = 0; // Disabled until we resolve issues with adding temporary camera copies
+        private const int MaxCameraPreviews = 16; // Disabled until we resolve issues with adding temporary camera copies
         private List<CameraPreview> cameraPreviews = new List<CameraPreview>();
         private GUIPanel cameraPreviewsPanel;
 
@@ -434,7 +434,7 @@ namespace bs.Editor
         /// <param name="resources">Selected resources.</param>
         private void OnSelectionChanged(SceneObject[] objects, string[] resources)
         {
-            UpdateCameraPreviews();
+            //UpdateCameraPreviews();
         }
 
         /// <inheritdoc/>
@@ -780,6 +780,8 @@ namespace bs.Editor
 
             if (VirtualInput.IsButtonDown(frameKey))
                 sceneCamera.FrameSelected();
+            
+            UpdateCameraPreviews();
         }
 
         /// <inheritdoc/>
@@ -1009,8 +1011,7 @@ namespace bs.Editor
                 var cameraPreview = cameraPreviews[i];
 
                 // Remove preview for destroyed cameras
-                if (cameraPreview.Camera == null || cameraPreview.Camera.SceneObject == null
-                    || /*Temporary hack until we can render preview non-main cameras properly*/ !cameraPreview.Camera.Main)
+                if (cameraPreview.Camera.IsDestroyed)
                 {
                     HideCameraPreview(cameraPreview.Camera);
                     continue;
@@ -1030,8 +1031,12 @@ namespace bs.Editor
                 if (cameraPreviews.Count >= MaxCameraPreviews)
                     break;
 
-                var selectedCamera = selectedObjects[i].GetComponent<Camera>();
-                if (selectedCamera != null && /*Temporary hack until we can render preview non-main cameras properly*/ selectedCamera.Main)
+                var selectedObject = selectedObjects[i];
+                if (selectedObject.HasFlag(SceneObjectEditorFlags.Internal))
+                    break;
+
+                var selectedCamera = selectedObject.GetComponent<Camera>();
+                if (selectedCamera != null && !selectedCamera.IsDestroyed)
                 {
                     var cameraPreview = cameraPreviews.Find(x => x.Camera == selectedCamera);
                     if (cameraPreview == null)
@@ -1044,11 +1049,11 @@ namespace bs.Editor
             if (previewsCount > 0)
             {
                 const float PreviewBoxAspect = 16.0f / 9.0f;
-                const float PreviewBoxMinHeight = 80;
+                const float PreviewBoxMinHeight = 60;
                 const float PreviewBoxMinWidth = PreviewBoxMinHeight * PreviewBoxAspect;
-                const float PreviewBoxMaxHeight = 150;
+                const float PreviewBoxMaxHeight = 130;
                 const float PreviewBoxMaxWidth = PreviewBoxMaxHeight * PreviewBoxAspect;
-                const float PreviewBoxViewSpaceMaxPercentage = 0.9f;
+                const float PreviewBoxViewSpaceMaxPercentage = 0.7f;
                 const float PreviewBoxMarigin = 10;
 
                 Rect2I rtBounds = renderTextureGUI.VisibleBounds;
@@ -1072,8 +1077,7 @@ namespace bs.Editor
 
                         var pos = rtSize - (previewSize + PreviewBoxMarigin) * new Vector2(x, y);
                         var cameraPreview = cameraPreviews[index++];
-                        cameraPreview.ShowPreview(cameraPreview.Camera, 
-                            new Rect2I((int)pos.x, (int)pos.y, (int)previewSize.x, (int)previewSize.y));
+                        cameraPreview.ShowPreview(new Rect2I((int)pos.x, (int)pos.y, (int)previewSize.x, (int)previewSize.y));
                     }
 
                     if (index == previewsCount)
@@ -1101,7 +1105,7 @@ namespace bs.Editor
         /// </summary>
         private void HideAllCameraPreviews()
         {
-            foreach(var entry in cameraPreviews)
+            foreach (var entry in cameraPreviews)
                 entry.Destroy();
 
             cameraPreviews.Clear();
