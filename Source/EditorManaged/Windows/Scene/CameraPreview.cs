@@ -112,27 +112,56 @@ namespace bs.Editor
         private void CopyCamera(Camera sourceCamera, Camera targetCamera)
         {
             // This implementation will be replaced by a call to CopyProperties when the implementation is done.
-            targetCamera.AspectRatio = sourceCamera.AspectRatio;
-            targetCamera.FarClipPlane = sourceCamera.FarClipPlane;
-            targetCamera.FieldOfView = sourceCamera.FieldOfView;
-            targetCamera.Layers = sourceCamera.Layers;
-            targetCamera.NearClipPlane = sourceCamera.NearClipPlane;
-            targetCamera.OrthoHeight = sourceCamera.OrthoHeight;
-            targetCamera.OrthoWidth = sourceCamera.OrthoWidth;
-            targetCamera.Priority = sourceCamera.Priority;
-            targetCamera.ProjectionType = sourceCamera.ProjectionType;
-            targetCamera.RenderSettings = sourceCamera.RenderSettings;
-            targetCamera.SampleCount = sourceCamera.SampleCount;
+            if (targetCamera.AspectRatio != sourceCamera.AspectRatio)
+                targetCamera.AspectRatio = sourceCamera.AspectRatio;
 
-            targetCamera.Viewport.Area = sourceCamera.Viewport.Area;
-            targetCamera.Viewport.ClearColor = sourceCamera.Viewport.ClearColor;
-            targetCamera.Viewport.ClearDepth = sourceCamera.Viewport.ClearDepth;
-            targetCamera.Viewport.ClearFlags = sourceCamera.Viewport.ClearFlags;
-            targetCamera.Viewport.ClearStencil = sourceCamera.Viewport.ClearStencil;
+            if (targetCamera.FarClipPlane != sourceCamera.FarClipPlane)
+                targetCamera.FarClipPlane = sourceCamera.FarClipPlane;
+
+            if (targetCamera.FieldOfView != sourceCamera.FieldOfView)
+                targetCamera.FieldOfView = sourceCamera.FieldOfView;
+
+            if (targetCamera.Layers != sourceCamera.Layers)
+                targetCamera.Layers = sourceCamera.Layers;
+
+            if (targetCamera.NearClipPlane != sourceCamera.NearClipPlane)
+                targetCamera.NearClipPlane = sourceCamera.NearClipPlane;
+
+            if (targetCamera.OrthoHeight != sourceCamera.OrthoHeight)
+                targetCamera.OrthoHeight = sourceCamera.OrthoHeight;
+
+            if (targetCamera.OrthoWidth != sourceCamera.OrthoWidth)
+                targetCamera.OrthoWidth = sourceCamera.OrthoWidth;
+
+            if (targetCamera.Priority != sourceCamera.Priority)
+                targetCamera.Priority = sourceCamera.Priority;
+
+            if (targetCamera.ProjectionType != sourceCamera.ProjectionType)
+                targetCamera.ProjectionType = sourceCamera.ProjectionType;
+
+            if (targetCamera.SampleCount != sourceCamera.SampleCount)
+                targetCamera.SampleCount = sourceCamera.SampleCount;
+            
+            targetCamera.RenderSettings = sourceCamera.RenderSettings;
+
+            if (targetCamera.Viewport.Area != sourceCamera.Viewport.Area)
+                targetCamera.Viewport.Area = sourceCamera.Viewport.Area;
+
+            if (targetCamera.Viewport.ClearColor != sourceCamera.Viewport.ClearColor)
+                targetCamera.Viewport.ClearColor = sourceCamera.Viewport.ClearColor;
+
+            if (targetCamera.Viewport.ClearDepth != sourceCamera.Viewport.ClearDepth)
+                targetCamera.Viewport.ClearDepth = sourceCamera.Viewport.ClearDepth;
+
+            if (targetCamera.Viewport.ClearFlags != sourceCamera.Viewport.ClearFlags)
+                targetCamera.Viewport.ClearFlags = sourceCamera.Viewport.ClearFlags;
+
+            if (targetCamera.Viewport.ClearStencil != sourceCamera.Viewport.ClearStencil)
+                targetCamera.Viewport.ClearStencil = sourceCamera.Viewport.ClearStencil;
 
             //var sourceCameraObj = new SerializableObject(sourceCamera);
             //var targetCameraObj = new SerializableObject(targetCamera);
-            
+
         }
 
         private void CopyProperties(SerializableObject source, SerializableObject target)
@@ -170,10 +199,10 @@ namespace bs.Editor
                 case SerializableProperty.FieldType.Dictionary:
                     var sourceDictionary = source.GetValue<IDictionary>();
                     var targetDictionary = target.GetValue<IDictionary>();
-                    
+
                     foreach (var key in sourceDictionary.Keys)
                     {
-                        if(targetDictionary.Contains(key))
+                        if (targetDictionary.Contains(key))
                         {
 
                         }
@@ -181,7 +210,7 @@ namespace bs.Editor
                         {
                         }
                     }
-                    
+
                     break;
 
                 case SerializableProperty.FieldType.Enum:
