@@ -32,6 +32,8 @@ namespace bs.Editor
         private GUILabel cameraNameLabel;
         private GUIButton pinButton;
 
+        private string copyPath = string.Empty;
+
         public CameraPreview(Camera camera, GUIPanel previewsPanel)
         {
             Camera = camera;
@@ -105,171 +107,230 @@ namespace bs.Editor
 
             if (previewCamera.Viewport.Target != renderTexture)
                 previewCamera.Viewport.Target = renderTexture;
+
+
+            //previewCamera.
+            Debug.Log($"FCP:{previewCamera.FarClipPlane}");
         }
 
 
 
         private void CopyCamera(Camera sourceCamera, Camera targetCamera)
         {
+            var sourceCameraObj = new SerializableObject(sourceCamera);
+
+            var targetCameraObj = new SerializableObject(targetCamera);
+
+            CopyProperties(sourceCameraObj, targetCameraObj);
+
+            //targetCamera = (Camera)sourceCameraObj.GetReferencedObject();
+
+            //Debug.Log($"FCP:{targetCamera.FarClipPlane}");
+
             // This implementation will be replaced by a call to CopyProperties when the implementation is done.
-            if (targetCamera.AspectRatio != sourceCamera.AspectRatio)
-                targetCamera.AspectRatio = sourceCamera.AspectRatio;
+            //if (targetCamera.AspectRatio != sourceCamera.AspectRatio)
+            //    targetCamera.AspectRatio = sourceCamera.AspectRatio;
 
-            if (targetCamera.FarClipPlane != sourceCamera.FarClipPlane)
-                targetCamera.FarClipPlane = sourceCamera.FarClipPlane;
+            //if (targetCamera.FarClipPlane != sourceCamera.FarClipPlane)
+            //    targetCamera.FarClipPlane = sourceCamera.FarClipPlane;
 
-            if (targetCamera.FieldOfView != sourceCamera.FieldOfView)
-                targetCamera.FieldOfView = sourceCamera.FieldOfView;
+            //if (targetCamera.FieldOfView != sourceCamera.FieldOfView)
+            //    targetCamera.FieldOfView = sourceCamera.FieldOfView;
 
-            if (targetCamera.Layers != sourceCamera.Layers)
-                targetCamera.Layers = sourceCamera.Layers;
+            //if (targetCamera.Layers != sourceCamera.Layers)
+            //    targetCamera.Layers = sourceCamera.Layers;
 
-            if (targetCamera.NearClipPlane != sourceCamera.NearClipPlane)
-                targetCamera.NearClipPlane = sourceCamera.NearClipPlane;
+            //if (targetCamera.NearClipPlane != sourceCamera.NearClipPlane)
+            //    targetCamera.NearClipPlane = sourceCamera.NearClipPlane;
 
-            if (targetCamera.OrthoHeight != sourceCamera.OrthoHeight)
-                targetCamera.OrthoHeight = sourceCamera.OrthoHeight;
+            //if (targetCamera.OrthoHeight != sourceCamera.OrthoHeight)
+            //    targetCamera.OrthoHeight = sourceCamera.OrthoHeight;
 
-            if (targetCamera.OrthoWidth != sourceCamera.OrthoWidth)
-                targetCamera.OrthoWidth = sourceCamera.OrthoWidth;
+            //if (targetCamera.OrthoWidth != sourceCamera.OrthoWidth)
+            //    targetCamera.OrthoWidth = sourceCamera.OrthoWidth;
 
-            if (targetCamera.Priority != sourceCamera.Priority)
-                targetCamera.Priority = sourceCamera.Priority;
+            //if (targetCamera.Priority != sourceCamera.Priority)
+            //    targetCamera.Priority = sourceCamera.Priority;
 
-            if (targetCamera.ProjectionType != sourceCamera.ProjectionType)
-                targetCamera.ProjectionType = sourceCamera.ProjectionType;
+            //if (targetCamera.ProjectionType != sourceCamera.ProjectionType)
+            //    targetCamera.ProjectionType = sourceCamera.ProjectionType;
 
-            if (targetCamera.SampleCount != sourceCamera.SampleCount)
-                targetCamera.SampleCount = sourceCamera.SampleCount;
-            
-            targetCamera.RenderSettings = sourceCamera.RenderSettings;
+            //if (targetCamera.SampleCount != sourceCamera.SampleCount)
+            //    targetCamera.SampleCount = sourceCamera.SampleCount;
 
-            if (targetCamera.Viewport.Area != sourceCamera.Viewport.Area)
-                targetCamera.Viewport.Area = sourceCamera.Viewport.Area;
+            //targetCamera.RenderSettings = sourceCamera.RenderSettings;
 
-            if (targetCamera.Viewport.ClearColor != sourceCamera.Viewport.ClearColor)
-                targetCamera.Viewport.ClearColor = sourceCamera.Viewport.ClearColor;
+            //if (targetCamera.Viewport.Area != sourceCamera.Viewport.Area)
+            //    targetCamera.Viewport.Area = sourceCamera.Viewport.Area;
 
-            if (targetCamera.Viewport.ClearDepth != sourceCamera.Viewport.ClearDepth)
-                targetCamera.Viewport.ClearDepth = sourceCamera.Viewport.ClearDepth;
+            //if (targetCamera.Viewport.ClearColor != sourceCamera.Viewport.ClearColor)
+            //    targetCamera.Viewport.ClearColor = sourceCamera.Viewport.ClearColor;
 
-            if (targetCamera.Viewport.ClearFlags != sourceCamera.Viewport.ClearFlags)
-                targetCamera.Viewport.ClearFlags = sourceCamera.Viewport.ClearFlags;
+            //if (targetCamera.Viewport.ClearDepth != sourceCamera.Viewport.ClearDepth)
+            //    targetCamera.Viewport.ClearDepth = sourceCamera.Viewport.ClearDepth;
 
-            if (targetCamera.Viewport.ClearStencil != sourceCamera.Viewport.ClearStencil)
-                targetCamera.Viewport.ClearStencil = sourceCamera.Viewport.ClearStencil;
+            //if (targetCamera.Viewport.ClearFlags != sourceCamera.Viewport.ClearFlags)
+            //    targetCamera.Viewport.ClearFlags = sourceCamera.Viewport.ClearFlags;
 
-            //var sourceCameraObj = new SerializableObject(sourceCamera);
-            //var targetCameraObj = new SerializableObject(targetCamera);
+            //if (targetCamera.Viewport.ClearStencil != sourceCamera.Viewport.ClearStencil)
+            //    targetCamera.Viewport.ClearStencil = sourceCamera.Viewport.ClearStencil;
+
 
         }
 
         private void CopyProperties(SerializableObject source, SerializableObject target)
         {
             for (int i = 0; i < source.Fields.Length; i++)
-                CopyProperty(source.Fields[i].GetProperty(), target.Fields[i].GetProperty());
+            {
+                var sourceProperty = source.Fields[i].GetProperty();
+                var targetProperty = target.Fields[i].GetProperty();
+
+                CopyProperty(sourceProperty, targetProperty);
+            }
         }
 
         private void CopyProperty(SerializableProperty source, SerializableProperty target)
         {
             switch (source.Type)
             {
-                case SerializableProperty.FieldType.Array:
-                    for (int i = 0; i < source.GetArray().GetLength(); i++)
-                        CopyProperty(source.GetArray().GetProperty(i), target.GetArray().GetProperty(i));
+                case SerializableProperty.FieldType.Int:
+                    {
+                        CopyPropertyValue<int>(source, target);
+                    }
+                    break;
+
+                case SerializableProperty.FieldType.Float:
+                    {
+                        CopyPropertyValue<float>(source, target);
+                    }
                     break;
 
                 case SerializableProperty.FieldType.Bool:
-                    CopyPropertyValue<bool>(source, target);
+                    {
+                        CopyPropertyValue<bool>(source, target);
+                    }
+                    break;
+
+                case SerializableProperty.FieldType.String:
+                    {
+                        CopyPropertyValue<string>(source, target);
+                    }
                     break;
 
                 case SerializableProperty.FieldType.Color:
-                    CopyPropertyValue<Color>(source, target);
-                    break;
-
-                case SerializableProperty.FieldType.ColorDistribution:
-                    break;
-
-                case SerializableProperty.FieldType.ColorGradient:
-                    break;
-
-                case SerializableProperty.FieldType.Curve:
-                    break;
-
-                case SerializableProperty.FieldType.Dictionary:
-                    var sourceDictionary = source.GetValue<IDictionary>();
-                    var targetDictionary = target.GetValue<IDictionary>();
-
-                    foreach (var key in sourceDictionary.Keys)
                     {
-                        if (targetDictionary.Contains(key))
-                        {
+                        CopyPropertyValue<Color>(source, target);
+                    }
+                    break;
 
-                        }
-                        else
-                        {
-                        }
+                case SerializableProperty.FieldType.Vector2:
+                    {
+                        CopyPropertyValue<Vector2>(source, target);
+                    }
+                    break;
+
+                case SerializableProperty.FieldType.Vector3:
+                    {
+                        CopyPropertyValue<Vector3>(source, target);
+                    }
+                    break;
+
+                case SerializableProperty.FieldType.Vector4:
+                    {
+                        CopyPropertyValue<Vector4>(source, target);
+                    }
+                    break;
+
+                case SerializableProperty.FieldType.GameObjectRef:
+                    {
+
                     }
 
                     break;
 
-                case SerializableProperty.FieldType.Enum:
-                    CopyPropertyValue<int>(source, target);
+                case SerializableProperty.FieldType.Resource:
+                    {
+
+                    }
+
                     break;
 
-                case SerializableProperty.FieldType.Float:
-                    CopyPropertyValue<float>(source, target);
+                case SerializableProperty.FieldType.Object:
+                    {
+                        CopyProperties(source.GetObject(), target.GetObject());
+                    }
                     break;
 
-                case SerializableProperty.FieldType.FloatDistribution:
-                    break;
-
-                case SerializableProperty.FieldType.GameObjectRef:
-                    break;
-
-                case SerializableProperty.FieldType.Int:
-                    CopyPropertyValue<int>(source, target);
-                    break;
+                case SerializableProperty.FieldType.Array:
+                    {
+                        target.SetValue(source.GetArray());
+                        break;
+                    }
 
                 case SerializableProperty.FieldType.List:
                     for (int i = 0; i < source.GetList().GetLength(); i++)
                         CopyProperty(source.GetList().GetProperty(i), target.GetList().GetProperty(i));
                     break;
 
-                case SerializableProperty.FieldType.Object:
-                    CopyProperties(source.GetObject(), target.GetObject());
-                    break;
-
-                case SerializableProperty.FieldType.Quaternion:
-                    CopyPropertyValue<Quaternion>(source, target);
-                    break;
-
-                case SerializableProperty.FieldType.Resource:
+                case SerializableProperty.FieldType.Dictionary:
+                    var sourceDictionary = source.GetValue<IDictionary>();
+                    var targetDictionary = target.GetValue<IDictionary>();
+                    foreach (var key in sourceDictionary.Keys)
+                    {
+                        if (targetDictionary.Contains(key))
+                        {
+                            targetDictionary[key] = sourceDictionary[key];
+                        }
+                        else
+                        {
+                            targetDictionary.Add(key, sourceDictionary[key]);
+                        }
+                    }
+                    target.SetValue(targetDictionary);
                     break;
 
                 case SerializableProperty.FieldType.RRef:
+                    { }
                     break;
 
-                case SerializableProperty.FieldType.String:
-                    CopyPropertyValue<string>(source, target);
+                case SerializableProperty.FieldType.ColorGradient:
+                    { }
                     break;
 
-                case SerializableProperty.FieldType.Vector2:
-                    CopyPropertyValue<Vector2>(source, target);
+                case SerializableProperty.FieldType.Curve:
+                    { }
+                    break;
+
+                case SerializableProperty.FieldType.FloatDistribution:
+                    { }
+                    break;
+
+                case SerializableProperty.FieldType.ColorDistribution:
+                    { }
+                    break;
+
+                case SerializableProperty.FieldType.Quaternion:
+                    {
+                        CopyPropertyValue<Quaternion>(source, target);
+                    }
+                    break;
+
+                case SerializableProperty.FieldType.Enum:
+                    {
+                        CopyPropertyValue<int>(source, target);
+                    }
                     break;
 
                 case SerializableProperty.FieldType.Vector2Distribution:
-                    break;
-
-                case SerializableProperty.FieldType.Vector3:
-                    CopyPropertyValue<Vector3>(source, target);
+                    { }
                     break;
 
                 case SerializableProperty.FieldType.Vector3Distribution:
+                    { }
                     break;
 
-                case SerializableProperty.FieldType.Vector4:
-                    CopyPropertyValue<Vector4>(source, target);
+                case SerializableProperty.FieldType.ColorGradientHDR:
+                    { }
                     break;
 
                 default:
@@ -280,8 +341,28 @@ namespace bs.Editor
 
         private void CopyPropertyValue<T>(SerializableProperty source, SerializableProperty target)
         {
-            if (source.IsValueType && source.GetValue<T>().Equals(target.GetValue<T>()))
-                target.SetValue(source.GetValue<T>());
+            if (source.IsValueType)
+            {
+                try
+                {
+                    var sourceValue = source.GetValue<T>();
+
+                    var targetValue = target.GetValue<T>();
+
+                    if (!sourceValue.Equals(targetValue))
+                    {
+                        target.SetValue(sourceValue);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.StackTrace);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"CopyPropertyValue called for '{source.Type}' which is not a value type.");
+            }
         }
 
         /// <summary>
