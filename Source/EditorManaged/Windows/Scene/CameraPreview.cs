@@ -107,75 +107,66 @@ namespace bs.Editor
 
             if (previewCamera.Viewport.Target != renderTexture)
                 previewCamera.Viewport.Target = renderTexture;
-
-
-            //previewCamera.
-            Debug.Log($"FCP:{previewCamera.FarClipPlane}");
         }
 
-
-
         private void CopyCamera(Camera sourceCamera, Camera targetCamera)
+        {
+            // This implementation will be replaced by a call to CopyCameraProperties when the implementation is done.
+            if (targetCamera.AspectRatio != sourceCamera.AspectRatio)
+                targetCamera.AspectRatio = sourceCamera.AspectRatio;
+
+            if (targetCamera.FarClipPlane != sourceCamera.FarClipPlane)
+                targetCamera.FarClipPlane = sourceCamera.FarClipPlane;
+
+            if (targetCamera.FieldOfView != sourceCamera.FieldOfView)
+                targetCamera.FieldOfView = sourceCamera.FieldOfView;
+
+            if (targetCamera.Layers != sourceCamera.Layers)
+                targetCamera.Layers = sourceCamera.Layers;
+
+            if (targetCamera.NearClipPlane != sourceCamera.NearClipPlane)
+                targetCamera.NearClipPlane = sourceCamera.NearClipPlane;
+
+            if (targetCamera.OrthoHeight != sourceCamera.OrthoHeight)
+                targetCamera.OrthoHeight = sourceCamera.OrthoHeight;
+
+            if (targetCamera.OrthoWidth != sourceCamera.OrthoWidth)
+                targetCamera.OrthoWidth = sourceCamera.OrthoWidth;
+
+            if (targetCamera.Priority != sourceCamera.Priority)
+                targetCamera.Priority = sourceCamera.Priority;
+
+            if (targetCamera.ProjectionType != sourceCamera.ProjectionType)
+                targetCamera.ProjectionType = sourceCamera.ProjectionType;
+
+            if (targetCamera.SampleCount != sourceCamera.SampleCount)
+                targetCamera.SampleCount = sourceCamera.SampleCount;
+
+            targetCamera.RenderSettings = sourceCamera.RenderSettings;
+
+            if (targetCamera.Viewport.Area != sourceCamera.Viewport.Area)
+                targetCamera.Viewport.Area = sourceCamera.Viewport.Area;
+
+            if (targetCamera.Viewport.ClearColor != sourceCamera.Viewport.ClearColor)
+                targetCamera.Viewport.ClearColor = sourceCamera.Viewport.ClearColor;
+
+            if (targetCamera.Viewport.ClearDepth != sourceCamera.Viewport.ClearDepth)
+                targetCamera.Viewport.ClearDepth = sourceCamera.Viewport.ClearDepth;
+
+            if (targetCamera.Viewport.ClearFlags != sourceCamera.Viewport.ClearFlags)
+                targetCamera.Viewport.ClearFlags = sourceCamera.Viewport.ClearFlags;
+
+            if (targetCamera.Viewport.ClearStencil != sourceCamera.Viewport.ClearStencil)
+                targetCamera.Viewport.ClearStencil = sourceCamera.Viewport.ClearStencil;
+        }
+
+        private void CopyCameraProperties(Camera sourceCamera, Camera targetCamera)
         {
             var sourceCameraObj = new SerializableObject(sourceCamera);
 
             var targetCameraObj = new SerializableObject(targetCamera);
 
             CopyProperties(sourceCameraObj, targetCameraObj);
-
-            //targetCamera = (Camera)sourceCameraObj.GetReferencedObject();
-
-            //Debug.Log($"FCP:{targetCamera.FarClipPlane}");
-
-            // This implementation will be replaced by a call to CopyProperties when the implementation is done.
-            //if (targetCamera.AspectRatio != sourceCamera.AspectRatio)
-            //    targetCamera.AspectRatio = sourceCamera.AspectRatio;
-
-            //if (targetCamera.FarClipPlane != sourceCamera.FarClipPlane)
-            //    targetCamera.FarClipPlane = sourceCamera.FarClipPlane;
-
-            //if (targetCamera.FieldOfView != sourceCamera.FieldOfView)
-            //    targetCamera.FieldOfView = sourceCamera.FieldOfView;
-
-            //if (targetCamera.Layers != sourceCamera.Layers)
-            //    targetCamera.Layers = sourceCamera.Layers;
-
-            //if (targetCamera.NearClipPlane != sourceCamera.NearClipPlane)
-            //    targetCamera.NearClipPlane = sourceCamera.NearClipPlane;
-
-            //if (targetCamera.OrthoHeight != sourceCamera.OrthoHeight)
-            //    targetCamera.OrthoHeight = sourceCamera.OrthoHeight;
-
-            //if (targetCamera.OrthoWidth != sourceCamera.OrthoWidth)
-            //    targetCamera.OrthoWidth = sourceCamera.OrthoWidth;
-
-            //if (targetCamera.Priority != sourceCamera.Priority)
-            //    targetCamera.Priority = sourceCamera.Priority;
-
-            //if (targetCamera.ProjectionType != sourceCamera.ProjectionType)
-            //    targetCamera.ProjectionType = sourceCamera.ProjectionType;
-
-            //if (targetCamera.SampleCount != sourceCamera.SampleCount)
-            //    targetCamera.SampleCount = sourceCamera.SampleCount;
-
-            //targetCamera.RenderSettings = sourceCamera.RenderSettings;
-
-            //if (targetCamera.Viewport.Area != sourceCamera.Viewport.Area)
-            //    targetCamera.Viewport.Area = sourceCamera.Viewport.Area;
-
-            //if (targetCamera.Viewport.ClearColor != sourceCamera.Viewport.ClearColor)
-            //    targetCamera.Viewport.ClearColor = sourceCamera.Viewport.ClearColor;
-
-            //if (targetCamera.Viewport.ClearDepth != sourceCamera.Viewport.ClearDepth)
-            //    targetCamera.Viewport.ClearDepth = sourceCamera.Viewport.ClearDepth;
-
-            //if (targetCamera.Viewport.ClearFlags != sourceCamera.Viewport.ClearFlags)
-            //    targetCamera.Viewport.ClearFlags = sourceCamera.Viewport.ClearFlags;
-
-            //if (targetCamera.Viewport.ClearStencil != sourceCamera.Viewport.ClearStencil)
-            //    targetCamera.Viewport.ClearStencil = sourceCamera.Viewport.ClearStencil;
-
-
         }
 
         private void CopyProperties(SerializableObject source, SerializableObject target)
